@@ -1,5 +1,7 @@
 // main.dart
+import 'dart:ui' as ui;
 import 'dart:convert'; // For jsonEncode and jsonDecode
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // For making HTTP requests
 import 'package:shared_preferences/shared_preferences.dart'; // To store the API key
@@ -273,7 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                         const SnackBar(content: Text('Navigate to Privacy Policy Screen (Not Implemented)')),
                       );
                     },
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap, visualDensity: VisualDensity.compact),
+                    style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: ui.Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap, visualDensity: VisualDensity.compact),
                     child: const Text('Privacy Policy'),
                   ),
                 ],
@@ -347,12 +349,16 @@ class _LoginPageState extends State<LoginPage> {
 
         if (response.statusCode == 200) {
           final Map<String, dynamic> responseData = jsonDecode(response.body);
-          final String? apiKey = responseData['res']; // Extract API key (make it nullable)
+          final String? apiKey = responseData['api_key']; // Extract API key (make it nullable)
+          final int? employee_id = responseData['employee_id'] as int?; // Ensure proper casting
+
 
           // Store the API key using SharedPreferences only if it's not null/empty
-          if (apiKey != null && apiKey.isNotEmpty) {
+          if (apiKey != null && apiKey.isNotEmpty && employee_id != null) {
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('api_key', apiKey);
+            await prefs.setInt('employee_id', employee_id);
+
             print('Login successful! API Key stored.');
 
             ScaffoldMessenger.of(context).showSnackBar(

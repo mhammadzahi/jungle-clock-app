@@ -12,6 +12,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? apiKey;
+  int? employee_id;
+
   bool _isLoadingKey = true; // Flag to track if API key is loading
 
   @override
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
     if (!mounted) return;
     setState(() {
       apiKey = prefs.getString('api_key');
+      employee_id = prefs.getInt('employee_id');
       _isLoadingKey = false; // Mark loading as complete
     });
   }
@@ -33,6 +36,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('api_key'); // Remove the key
+    await prefs.remove('employee_id');
     if (!mounted) return;
     // Navigate back to login screen (defined in main.dart) and remove all previous routes
     Navigator.pushAndRemoveUntil(
@@ -50,7 +54,7 @@ class _HomePageState extends State<HomePage> {
         // Use the primary color from the theme if needed, or define one
         backgroundColor: const Color(0xFFE53935), // Example: Use the red color
         foregroundColor: Colors.white, // Make AppBar icons/text white
-        title: const Text('Jungle Home'),
+        title: const Text('JungleClock Home'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -78,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                 _isLoadingKey
                     ? const CircularProgressIndicator()
                     : Text(
-                  'Your API Key:\n${apiKey ?? "Not found"}', // Handle null case
+                  'Your API Key:\n${apiKey ?? "API Key Not found"}\nEmployee Id:${employee_id ?? "employee Id Not Found"}', // Handle null case
                   textAlign: TextAlign.center, // Center text
                   style: const TextStyle(fontSize: 16),
                 ),
