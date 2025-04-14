@@ -409,7 +409,7 @@ class _LoginPageState extends State<LoginPage> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to connect. Check connection or try again later. Error: $e'), // User-friendly message
+            content: Text('Failed to connect. Check connection or try again later.'),
             backgroundColor: Colors.redAccent,
           ),
         );
